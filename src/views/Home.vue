@@ -66,9 +66,9 @@
                                 <v-container>
                                     <v-layout text-center column>
                                         <v-flex xs12>
-                                            <h1 class="display-1 font-weight-bold mb-3">Gas consumption</h1>
+                                            <h1 class="display-1 font-weight-bold mb-3">Fuel consumption</h1>
                                             <p class="subheading font-weight-regular">
-                                                Gas.
+                                                Track your average fuel consumption.
                                             </p>
                                         </v-flex>
 
@@ -92,35 +92,9 @@
                                 <v-container>
                                     <v-layout text-center column>
                                         <v-flex xs12>
-                                            <h1 class="display-1 font-weight-bold mb-3">Maintenance</h1>
-                                            <p class="subheading font-weight-regular">
-                                                Track everything.
-                                            </p>
-                                        </v-flex>
-
-                                        <v-flex xs12>
-                                            <v-img :src="require('../assets/maintenance.svg')" class="my-3" contain height="100"></v-img>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-container>
-                            </v-layout>
-                        </v-sheet>
-                    </v-carousel-item>
-
-                    <v-carousel-item>
-                        <v-sheet height="100%" tile>
-                            <v-layout
-                                align-center
-                                fill-height
-                                justify-center
-                                column
-                            >
-                                <v-container>
-                                    <v-layout text-center column>
-                                        <v-flex xs12>
                                             <h1 class="display-1 font-weight-bold mb-3">Remainders</h1>
                                             <p class="subheading font-weight-regular">
-                                                Remainding.
+                                                Get remainders about important maintenance or expiring documents.
                                             </p>
                                         </v-flex>
 
