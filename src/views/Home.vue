@@ -92,9 +92,9 @@
                                 <v-container>
                                     <v-layout text-center column>
                                         <v-flex xs12>
-                                            <h1 class="display-1 font-weight-bold mb-3">Remainders</h1>
+                                            <h1 class="display-1 font-weight-bold mb-3">Reminders</h1>
                                             <p class="subheading font-weight-regular">
-                                                Get remainders about important maintenance or expiring documents.
+                                                Set reminders about important maintenance activities or expiring documents.
                                             </p>
                                         </v-flex>
 
