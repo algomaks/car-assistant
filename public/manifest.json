@@ -3,7 +3,7 @@
   "short_name": "Car Assistant",
   "icons": [
     {
-      "src": "./img/icons/android-icon-192x192.png",
+      "src": "http://car-assistant.ai-valley.com/img/icons/android-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     }
