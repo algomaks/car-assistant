@@ -1,8 +1,8 @@
 <template>
     <v-container>
-        <v-layout column>
-            <v-flex xs12>
-                <v-carousel>
+        <v-row>
+            <v-col cols="12" class="text-center">
+                <v-carousel height="350px">
                     <v-carousel-item>
                         <v-sheet height="100%" tile>
                             <v-layout
@@ -16,7 +16,7 @@
                                         <v-flex xs12>
                                             <h1 class="display-1 font-weight-bold mb-3">Car Assistant</h1>
                                             <p class="subheading font-weight-regular">
-                                                100% private and secure app to track everything about your car.
+                                                100% private and secure app to track and improve the fuel consumption of your car.
                                             </p>
                                         </v-flex>
 
@@ -107,9 +107,84 @@
                         </v-sheet>
                     </v-carousel-item>
                 </v-carousel>
+            </v-col>
+        </v-row>
 
-            </v-flex>
-        </v-layout>
+        <v-row>
+            <v-col cols="12" v-if="!isLogged">
+                <v-hover v-slot:default="{ hover }">
+                    <v-card :elevation="hover ? 12 : 2" @click="login">
+                        <v-img
+                            height="200px"
+                            :src="require('../assets/key.jpg')"
+                        >
+                            <div class="d-flex flex-column justify-end fill-height bottom-gradient">
+                                <div class="pa-3 white--text">
+                                    <h1 class="display-1">Log in</h1>
+                                    <div class="subtitle-1 mt-2">Log in securely using your Blockstack ID.</div>
+                                </div>
+                            </div>
+                        </v-img>
+                    </v-card>
+                </v-hover>
+            </v-col>
+
+
+            <v-col cols="12" v-if="isLogged">
+                <v-hover v-slot:default="{ hover }">
+                    <v-card :elevation="hover ? 12 : 2" @click="logout">
+                        <v-img
+                            height="200px"
+                            :src="require('../assets/key.jpg')"
+                        >
+                            <div class="d-flex flex-column justify-end fill-height bottom-gradient">
+                                <div class="pa-3 white--text">
+                                    <h1 class="display-1">Log out</h1>
+                                    <div class="subtitle-1 mt-2">Disconnect from the app securely.</div>
+                                </div>
+                            </div>
+                        </v-img>
+                    </v-card>
+                </v-hover>
+            </v-col>
+
+            <v-col cols="12">
+                <v-hover v-slot:default="{ hover }">
+                    <v-card :elevation="hover ? 12 : 2" @click="open">
+                        <v-img
+                            height="200px"
+                            :src="require('../assets/fuel.jpg')"
+                        >
+                            <div class="d-flex flex-column justify-end fill-height bottom-gradient">
+                                <div class="pa-3 white--text">
+                                    <h1 class="display-1">Fuel consumption</h1>
+                                    <div class="subtitle-1 mt-2">Log your fuel consumption daily.</div>
+                                </div>
+                            </div>
+                        </v-img>
+                    </v-card>
+                </v-hover>
+            </v-col>
+
+            <v-col cols="12">
+                <v-hover v-slot:default="{ hover }">
+                    <v-card :elevation="hover ? 12 : 2" @click="open">
+                        <v-img
+                            height="200px"
+                            :src="require('../assets/analytics.jpg')"
+                        >
+                            <div class="d-flex flex-column justify-end fill-height bottom-gradient">
+                                <div class="pa-3 white--text">
+                                    <h1 class="display-1">Fuel analytics</h1>
+                                    <div class="subtitle-1 mt-2">Analyze your data to gain deep understanding of your fuel consumption.</div>
+                                </div>
+                            </div>
+                        </v-img>
+                    </v-card>
+                </v-hover>
+            </v-col>
+
+        </v-row>
     </v-container>
 </template>
 
@@ -121,14 +196,48 @@
 
         computed: {
             ...mapGetters([
-                'session'
-            ]),
+                'session',
+                'isLogged'
+            ])
         },
 
         methods: {
-            handleButtonClick() {
+            ...mapMutations([
+                'setSession',
+                'setIsLogged'
+            ]),
+
+            login() {
                 this.session.redirectToSignIn();
+            },
+
+            logout() {
+                this.session.signUserOut();
+
+                this.setSession(null);
+                this.setIsLogged(false);
+
+                window.location = window.location.origin;
+            },
+
+            open() {
+                if (this.isLogged) {
+                    this.$router.push('/consumption');
+                }
+                else {
+                    this.session.redirectToSignIn();
+                }
             }
         }
     };
 </script>
+
+<style scoped>
+    .bottom-gradient {
+        background-image: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.9) 10%,
+            transparent 120px
+        );
+    }
+</style>

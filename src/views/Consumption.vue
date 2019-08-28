@@ -1,89 +1,82 @@
 <template>
   <v-container>
-        <v-layout>
-            <v-flex xs12 md6 offset-md3>
+        <v-row justify="center" align="center">
+            <v-col cols="12" md="8" class="text-left">
                 <h1>Fuel Consumption</h1>
                 <p>Log every refuel you make and track your average fuel consumption.</p>
-            </v-flex>
-        </v-layout>
+            </v-col>
+        </v-row>
 
-        <v-layout>
-            <v-flex xs12 md6 offset-md3>
+        <v-row justify="center" align="center">
+            <v-col cols="12" md="8" class="text-left">
+                <v-card>
+                    <v-card-title>Average fuel consumption</v-card-title>
 
-                <v-card tile>
-                    <v-dialog v-model="dialog" persistent max-width="600px">
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                v-on="on"
-                                color="blue darken-3"
-                                dark
-                                absolute
-                                top
-                                right
-                                fab
-                            >
-                                <v-icon>mdi-pencil</v-icon>
-                            </v-btn>
-                        </template>
+                    <v-card-text v-if="consumption > 0">
+                        1 liter per {{ consumption }} km
+                    </v-card-text>
 
-                        <v-card>
-                            <v-card-title>
-                                <span class="headline">Log fuel consumption</span>
-                            </v-card-title>
+                    <v-card-text v-if="consumption == 0">
+                        Not enough data.
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
 
-                            <v-card-text>
-                                <v-container grid-list-md>
-                                    <v-layout wrap>
-                                        <v-flex xs12 md6>
-                                            <v-text-field v-model="km" label="Current odometer value" type="number" value="1" required></v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12 md6>
-                                            <v-text-field v-model="litre" label="Amount refueled" type="number" value="1" required></v-text-field>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-container>
-                            </v-card-text>
+        <v-row justify="center" align="center">
+            <v-col cols="12" md="3">
+                <v-text-field
+                    v-model="odometer"
+                    type="number"
+                    label="Odometer value (km)"
+                    required
+                ></v-text-field>
+            </v-col>
 
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="handleDialogClose">Close</v-btn>
-                                <v-btn color="blue darken-1" text @click="handleDialogSave">Save</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
+            <v-col cols="12" md="3">
+                <v-text-field
+                    v-model="amount"
+                    type="number"
+                    label="Amount refueled (liters)"
+                    required
+                ></v-text-field>
+            </v-col>
 
+            <v-col cols="12" md="2">
+                <v-btn @click="save" color="primary" block>Save</v-btn>
+            </v-col>
+        </v-row>
+
+        <v-row justify="center" align="center">
+            <v-col cols="12" md="8">
+                <v-card>
                     <v-list>
-                        <!-- <v-subheader>Monday</v-subheader> -->
-
                         <v-list-item
                             two-line
                             v-for="(item, i) in itemList"
                             :key="i"
                         >
-                            <v-list-item-avatar>
-                                <v-icon>mdi-pencil</v-icon>
-                            </v-list-item-avatar>
-
                             <v-list-item-content>
-                                <v-list-item-title>{{ item.km }} km - {{ item.litre }} l</v-list-item-title>
-                                <!-- <v-list-item-subtitle>{{ item.date }}</v-list-item-subtitle> -->
+                                <v-list-item-title>At {{ item.odometer }} km, refueled {{ item.amount }} liters</v-list-item-title>
+                                <v-list-item-subtitle>{{ format(item.date) }}</v-list-item-subtitle>
                             </v-list-item-content>
 
                             <v-list-item-action>
                                 <v-btn icon @click="removeItem(item)">
-                                    <v-icon color="red">mdi-close</v-icon>
+                                    <v-icon color="red">mdi-delete</v-icon>
                                 </v-btn>
                             </v-list-item-action>
                         </v-list-item>
                     </v-list>
                 </v-card>
-            </v-flex>
-        </v-layout>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
 <script>
     import * as uuid from 'uuid/v4';
+    import dayjs from 'dayjs';
     import { mapGetters, mapMutations, mapActions } from "vuex";
 
     export default {
@@ -106,49 +99,62 @@
         },
 
         data: () => ({
-            dialog: false,
-
-            km: null,
-            litre: null,
-            date: null,
-
+            odometer: 0,
+            amount: 0,
             items: [],
         }),
 
         computed: {
             ...mapGetters([
                 'session',
-                'username'
+                'isLogged'
             ]),
 
             itemList() {
                 return this.items;
+            },
+
+            consumption() {
+                if (this.items.length < 2) {
+                    return 0;
+                }
+
+                const values = [];
+
+                for (let i=0; i < this.items.length - 1; i++) {
+                    const distanceDiff = this.items[i+1].odometer - this.items[i].odometer;
+                    const amountDiff = this.items[i].amount;
+
+                    values.push(distanceDiff / amountDiff);
+                }
+
+                let x = 0;
+
+                for (const value of values) {
+                    x += value;
+                }
+
+                return x / values.length;
             }
         },
 
         methods: {
-            handleDialogSave() {
-                this.dialog = false;
-
-                if (!this.km || !this.litre) {
+            save() {
+                if (!this.odometer || !this.amount) {
                     return;
                 }
 
                 this.items.push({
                     id: uuid(),
-                    km: this.km,
-                    litre: this.litre,
+                    odometer: this.odometer,
+                    amount: this.amount,
                     date: new Date()
                 });
 
-                this.km = null;
-                this.litre = null;
+                this.odometer = 0;
+                this.amount = 0;
 
                 this.updateBlockchain();
-            },
-
-            handleDialogClose() {
-                this.dialog = false;
             },
 
             removeItem(item) {
@@ -172,6 +178,10 @@
                         console.error(err);
                     })
                 ;
+            },
+
+            format(date) {
+                return dayjs(date).format('D MMMM, YYYY');
             }
         }
     }

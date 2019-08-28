@@ -6,18 +6,18 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         session: null,
-        username: null,
+        isLogged: null,
     },
     getters: {
         session: state => state.session,
-        username: state => state.username,
+        isLogged: state => state.isLogged,
     },
     mutations: {
         setSession: (state, value) => {
             state.session = value;
         },
-        setUsername: (state, value) => {
-            state.username = value;
+        setIsLogged: (state, value) => {
+            state.isLogged = value;
         }
     },
     actions: {

@@ -38,7 +38,7 @@ export default {
         this.setSession(session);
 
         if (session.isUserSignedIn()) {
-            this.isLogged(true);
+            this.setIsLogged(true);
         }
         else if (session.isSignInPending()) {
             session.handlePendingSignIn().then(userData => {

@@ -10,6 +10,7 @@
   "dependencies": {
     "blockstack": "^19.2.5",
     "core-js": "^2.6.5",
+    "dayjs": "^1.8.16",
     "register-service-worker": "^1.6.2",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
