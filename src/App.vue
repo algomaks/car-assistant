@@ -1,47 +1,23 @@
 <template>
     <v-app>
-        <v-navigation-drawer
-            v-model="drawer"
-            app
-            clipped
-            dark
-        >
-            <v-list dark dense>
-                <v-list-item v-for="item in drawerItems" :key="item.path" :to="item.path" color="blue lighten-4">
-                    <v-list-item-action>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
+        <v-container>
+            <v-row align="center" justify="center">
+                <v-col cols="12" md="8" class="fill-height">
+                        <!-- <v-app-bar
+                            color="indigo darken-2"
+                            dark
+                        >
+                            <v-icon>mdi-home</v-icon>
 
-        <v-app-bar app dark clipped-left color="blue darken-3">
-            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+                            <v-toolbar-title class="ml-4">Car Assistant</v-toolbar-title>
+                        </v-app-bar> -->
 
-            <v-icon class="ml-4">mdi-car</v-icon>
-
-            <v-toolbar-title class="ml-2">
-                Car Assistant
-            </v-toolbar-title>
-
-            <v-spacer></v-spacer>
-
-            <v-btn v-if="username" @click="signOut" large text>
-                <v-icon left>mdi-login</v-icon>
-                Log Out
-            </v-btn>
-
-            <v-btn v-else @click="signIn" large text>
-                Log In with Blockstack
-            </v-btn>
-        </v-app-bar>
-
-        <v-content>
-            <router-view />
-        </v-content>
+                        <v-content>
+                            <router-view />
+                        </v-content>
+                </v-col>
+            </v-row>
+        </v-container>
     </v-app>
 </template>
 
@@ -62,22 +38,13 @@ export default {
         this.setSession(session);
 
         if (session.isUserSignedIn()) {
-            console.log(1);
-
-            const userData = session.loadUserData();
-            const username = userData.username;
-
-            this.setUsername(username);
+            this.isLogged(true);
         }
         else if (session.isSignInPending()) {
-            console.log(2);
-
             session.handlePendingSignIn().then(userData => {
                 window.location = window.location.origin;
             });
         }
-
-        console.log(3);
     },
 
     data: () => ({
@@ -101,14 +68,14 @@ export default {
     computed: {
         ...mapGetters([
             'session',
-            'username'
+            'isLogged'
         ]),
     },
 
     methods: {
          ...mapMutations([
             'setSession',
-            'setUsername'
+            'setIsLogged'
         ]),
 
         handleDrawlerClick() {
@@ -123,7 +90,7 @@ export default {
             this.session.signUserOut();
 
             this.setSession(null);
-            this.setUsername(null);
+            this.setIsLogged(false);
 
             window.location = window.location.origin;
         }
